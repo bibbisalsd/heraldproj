@@ -510,6 +510,19 @@ class SelfKnowledgeIndex:
     def answer_codebase_question(self, query: str | None = None) -> str:
         """Answer 'how are you built?' from structured data."""
         snapshot = self.get_snapshot()
+        all_modules = (
+            snapshot.runtime_modules
+            + snapshot.voice_modules
+            + snapshot.routing_modules
+            + snapshot.bg1_modules
+            + snapshot.tool_modules
+            + snapshot.addon_modules
+            + snapshot.memory_modules
+            + snapshot.model_modules
+            + snapshot.world_model_modules
+            + snapshot.observability_modules
+        )
+        total_loc = sum(m.line_count for m in all_modules)
         counts = {
             "runtime": len(snapshot.runtime_modules),
             "voice": len(snapshot.voice_modules),
@@ -524,7 +537,8 @@ class SelfKnowledgeIndex:
         }
         total = sum(counts.values())
         return (
-            f"I'm built from {total} Python modules across {len(counts)} subsystems. "
+            f"I'm built from {total} Python modules across {len(counts)} subsystems "
+            f"with {total_loc:,} total lines of code. "
             f"My core runtime has {counts['runtime']} modules, "
             f"routing has {counts['routing']}, "
             f"I have {counts['tool']} tool modules, "

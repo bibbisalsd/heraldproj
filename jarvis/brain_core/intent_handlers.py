@@ -326,7 +326,9 @@ def _compose_self_identity(memory: Any) -> str:
     runtime_location = _pocket_slot_value(
         memory, "self:jarvis", "runtime_location", "this computer"
     )
-    return f"I am {name}, a {assistant_type} running on {runtime_location}."
+    version = _pocket_slot_value(memory, "self:jarvis", "version", "")
+    version_str = f" version {version}" if version else ""
+    return f"I am {name}{version_str}, a {assistant_type} running on {runtime_location}."
 
 
 def _compose_codebase_location(memory: Any) -> str:
@@ -421,12 +423,32 @@ def _compose_architecture_summary(memory: Any) -> str:
     spoken_name = _pocket_slot_value(
         memory, "architecture:herald_skeptic", "spoken_name"
     )
+    summary = ""
     if spoken_name:
-        return f"I was created using the {spoken_name}."
-    fallback = _pocket_slot_value(memory, "self:jarvis", "architecture_summary")
-    if fallback:
-        return fallback
-    return "My protected core memory says I use a specific architecture."
+        summary = f"I was created using the {spoken_name}."
+    else:
+        summary = _pocket_slot_value(memory, "self:jarvis", "architecture_summary", "I use a specific local architecture.")
+    
+    # Hardware section
+    hw_bits = []
+    cpu = _pocket_slot_value(memory, "self:jarvis", "cpu_cores")
+    if cpu:
+        hw_bits.append(f"{cpu} CPU cores")
+    ram = _pocket_slot_value(memory, "self:jarvis", "ram_gb")
+    if ram:
+        hw_bits.append(f"{ram} GB of RAM")
+    
+    gpu_name = _pocket_slot_value(memory, "self:jarvis", "gpu_0_name")
+    gpu_vram = _pocket_slot_value(memory, "self:jarvis", "gpu_0_vram_gb")
+    if gpu_name and gpu_vram:
+        hw_bits.append(f"an {gpu_name} with {gpu_vram} GB of VRAM")
+    elif gpu_name:
+        hw_bits.append(f"an {gpu_name} GPU")
+        
+    if hw_bits:
+        summary += f" I am currently running on a system with {_human_join(hw_bits)}."
+        
+    return summary
 
 
 def _owner_slot(memory: Any, slot_key: str) -> str:
@@ -2293,7 +2315,7 @@ def handle_bg1_update(env: Any, decision: Any, services: dict[str, Any]) -> Any:
     if not job_status:
         return TurnExecutionResult(
             lane="realtime",
-            text="I'm not currently running any long tasks.",
+            text="I'm online. I'm not currently running any long tasks.",
             resolved_by="template",
             conversation_user_text=env.text,
         )
@@ -2313,7 +2335,7 @@ def handle_bg1_update(env: Any, decision: Any, services: dict[str, Any]) -> Any:
             )
         return TurnExecutionResult(
             lane="realtime",
-            text="I'm not currently running any long tasks. I'm ready for your next request.",
+            text="I'm online. I'm not currently running any long tasks. I'm ready for your next request.",
             resolved_by="template",
             conversation_user_text=env.text,
         )
@@ -2578,6 +2600,7 @@ def build_default_registry() -> IntentHandlerRegistry:
     registry.register("bg1_result", handle_bg1_result)
     registry.register("website_check", handle_website_check)
     registry.register("screen_show", handle_screen_show)
+    registry.register("screen_query", handle_screen_query)
     registry.register("health_report", handle_health_report)
     # Phase 10: Self-knowledge aware handlers
     registry.register("greeting", handle_greeting)

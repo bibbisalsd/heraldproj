@@ -9,7 +9,8 @@ from jarvis.main import JarvisRuntime
 def test_renderer_returns_degraded_message_when_flag_set(monkeypatch):
     monkeypatch.setenv("JARVIS_DEGRADED_MODE", "true")
     packet = ResponsePacket(user_text="status", facts=["brain:fact:a"], constraints=[], tone="neutral", length_hint="short")
-    text = CLLMRenderer().render(packet)
+    result = CLLMRenderer().render(packet)
+    text = result["text"]
     assert "degraded mode" in text.lower()
 
 

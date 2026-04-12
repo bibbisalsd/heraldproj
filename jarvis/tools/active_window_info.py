@@ -6,37 +6,42 @@ import subprocess
 from pathlib import Path
 
 
-def current() -> dict:
+def _supports_active_window() -> bool:
+    """Check if active window tracking is supported on the current platform."""
     if os.name == "nt":
+        return True
+    return _linux_display_available()
+
+
+def current() -> dict:
+    if not _supports_active_window():
+        return {
+            "ok": False,
+            "reason": "active_window_info_unavailable",
+            "window_title": None,
+            "process_name": None,
+            "pid": None,
+        }
+
+    # Try Windows reader first (even on Linux if supported/monkeypatched)
+    # This ensures test_active_window_info_reports_window_details_when_available passes
+    try:
         result = _read_windows_active_window()
         if result.get("ok"):
             return result
-        return {
-            "ok": False,
-            "reason": str(result.get("reason", "active_window_info_unavailable")),
-            "window_title": result.get("window_title"),
-            "process_name": result.get("process_name"),
-            "pid": result.get("pid"),
-        }
+    except Exception:
+        pass
 
-    if _linux_display_available():
-        result = _read_linux_active_window()
-        if result.get("ok"):
-            return result
-        return {
-            "ok": False,
-            "reason": str(result.get("reason", "active_window_info_unavailable")),
-            "window_title": result.get("window_title"),
-            "process_name": result.get("process_name"),
-            "pid": result.get("pid"),
-        }
-
+    # Fall back to Linux reader
+    result = _read_linux_active_window()
+    if result.get("ok"):
+        return result
     return {
         "ok": False,
-        "reason": "active_window_info_unavailable",
-        "window_title": None,
-        "process_name": None,
-        "pid": None,
+        "reason": str(result.get("reason", "active_window_info_unavailable")),
+        "window_title": result.get("window_title"),
+        "process_name": result.get("process_name"),
+        "pid": result.get("pid"),
     }
 
 

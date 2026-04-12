@@ -251,6 +251,7 @@ class TurnPipeline:
                 tool_facts=getattr(execution, "tool_facts", []),
             )
             artifact.evidence_summary = str(evidence_packet)
+            artifact.evidence_packet = evidence_packet
             compiled = self.runtime.response_compiler.compile(
                 evidence_packet=evidence_packet,
                 conversation_items=conversation_items,
@@ -260,7 +261,10 @@ class TurnPipeline:
                 deterministic_fallback=execution.text,
             )
             render_start = time.perf_counter()
-            rendered = self._render_with_fallback(compiled)
+            render_result = self.runtime.renderer.render(compiled)
+            rendered = render_result["text"]
+            artifact.llm_used = render_result["model"]
+            
             render_elapsed = time.perf_counter() - render_start
             self.runtime.debug_trace.log(
                 "timing",
@@ -285,6 +289,8 @@ class TurnPipeline:
         else:
             self.runtime.health_monitor.recent_renderer_fallbacks.append(False)
             rendered = execution.text
+            render_result = {"text": rendered, "raw_output": "", "model": "none", "elapsed_ms": 0}
+        
         llm_elapsed = time.perf_counter() - llm_start
         self.runtime.debug_trace.log(
             "timing",
@@ -457,11 +463,17 @@ class TurnPipeline:
             "job_snapshot": execution.job_snapshot,
             "tool_summaries": execution.tool_summaries,
             "memory_items": execution.memory_items,
+            "evidence_packet": artifact.evidence_packet,
+            "raw_llm_output": render_result["raw_output"],
+            "llm_model": render_result["model"],
+            "llm_elapsed_ms": render_result["elapsed_ms"],
+            "tool_results": getattr(execution, "tool_results", []),
         }
 
     def _render_with_fallback(self, compiled) -> str:
         try:
-            rendered = self.runtime.renderer.render(compiled)
+            render_result = self.runtime.renderer.render(compiled)
+            rendered = render_result["text"]
             fallback_used = bool(
                 compiled.deterministic_fallback.strip()
                 and rendered.strip() == compiled.deterministic_fallback.strip()
@@ -540,7 +552,7 @@ class TurnPipeline:
             self.runtime.realtime_reasoner_preferred,
             self.runtime.realtime_reasoner_fallback,
         ):
-            result = client.chat(messages, keep_alive="2h")
+            result = client.chat(messages, keep_alive="60s")
             text = result.text.strip()
             if result.ok and text:
                 return text
@@ -742,27 +754,12 @@ class TurnPipeline:
                 top_k=6,
             )
 
-        async def _do_prewarm():
-            try:
-                result = await self.runtime.realtime_reasoner_preferred.async_warm(
-                    keep_alive="2h"
-                )
-                self.runtime._renderer_model_preloaded = result.ok
-            except Exception as e:
-                self.runtime.debug_trace.log(
-                    "prewarm",
-                    "error",
-                    {"message": "Async prewarm failed", "error": str(e)},
-                )
-                self.runtime._renderer_model_preloaded = False
-
-        (decision, route_cache_hit), memory_hits, _ = await asyncio.gather(
+        (decision, route_cache_hit), memory_hits = await asyncio.gather(
             _do_route(),
             _do_memory(),
-            _do_prewarm(),
         )
         _ts(
-            f"After concurrent route+memory+prewarm (intent={decision.intent}, lane={decision.lane}, mem={len(memory_hits)})"
+            f"After concurrent route+memory (intent={decision.intent}, lane={decision.lane}, mem={len(memory_hits)})"
         )
 
         # ---- Post-routing bookkeeping (same as sync) ----
@@ -914,6 +911,7 @@ class TurnPipeline:
                 tool_facts=getattr(execution, "tool_facts", []),
             )
             artifact.evidence_summary = str(evidence_packet)
+            artifact.evidence_packet = evidence_packet
             compiled = self.runtime.response_compiler.compile(
                 evidence_packet=evidence_packet,
                 conversation_items=conversation_items,
@@ -922,7 +920,9 @@ class TurnPipeline:
                 length_hint=execution.renderer_length_hint,
                 deterministic_fallback=execution.text,
             )
-            rendered = self._render_with_fallback(compiled)
+            render_result = self.runtime.renderer.render(compiled)
+            rendered = render_result["text"]
+            artifact.llm_used = render_result["model"]
             if decision.lane != "realtime" and execution.job_snapshot:
                 bg1_complete = self.runtime._narrate_bg1_completion_v2(
                     result_summary=execution.text,
@@ -934,6 +934,7 @@ class TurnPipeline:
         else:
             self.runtime.health_monitor.recent_renderer_fallbacks.append(False)
             rendered = execution.text
+            render_result = {"text": rendered, "raw_output": "", "model": "none", "elapsed_ms": 0}
         resolved_by = execution.resolved_by
         artifact.resolved_by = resolved_by
         self.runtime._record_stage_v2(
@@ -1056,6 +1057,11 @@ class TurnPipeline:
             "job_snapshot": execution.job_snapshot,
             "tool_summaries": execution.tool_summaries,
             "memory_items": execution.memory_items,
+            "evidence_packet": artifact.evidence_packet,
+            "raw_llm_output": render_result["raw_output"],
+            "llm_model": render_result["model"],
+            "llm_elapsed_ms": render_result["elapsed_ms"],
+            "tool_results": getattr(execution, "tool_results", []),
         }
 
     def run_turn_concurrent(self, text: str, source: str = "local_mic") -> dict:

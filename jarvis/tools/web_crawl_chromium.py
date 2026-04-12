@@ -42,7 +42,7 @@ def crawl(
                 continue
             seen.add(canonical)
 
-            fetched = fetch(current_url, use_playwright=True)
+            fetched = fetch(current_url)
             if not fetched.get("ok"):
                 if not pages:
                     return {

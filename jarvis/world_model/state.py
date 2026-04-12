@@ -24,22 +24,22 @@ class WorldState:
 
     timestamp: str
     user_profile: UserProfile
-    task_stack: tuple[Task, ...] = field(default_factory=tuple)
-    open_bg1_jobs: tuple[JobStatus, ...] = field(default_factory=tuple)
+    task_stack: list[Task] = field(default_factory=list)
+    open_bg1_jobs: list[JobStatus] = field(default_factory=list)
     tool_availability: dict[str, ToolHealth] = field(default_factory=dict)
     model_availability: dict[str, ModelHealth] = field(default_factory=dict)
     device_status: DeviceStatus | None = None
-    recent_turn_confidences: tuple[TurnConfidence, ...] = field(default_factory=tuple)
+    recent_turn_confidences: list[TurnConfidence] = field(default_factory=list)
     aggregate_confidence: float = 1.0
-    failure_log: tuple[dict[str, Any], ...] = field(default_factory=tuple)
+    failure_log: list[dict[str, Any]] = field(default_factory=list)
 
     def with_updates(self, **updates: Any) -> "WorldState":
         """Create a new WorldState with specified fields updated."""
         return WorldState(
             timestamp=self.timestamp,
             user_profile=updates.get("user_profile", self.user_profile),
-            task_stack=tuple(updates.get("task_stack", self.task_stack)),
-            open_bg1_jobs=tuple(updates.get("open_bg1_jobs", self.open_bg1_jobs)),
+            task_stack=list(updates.get("task_stack", self.task_stack)),
+            open_bg1_jobs=list(updates.get("open_bg1_jobs", self.open_bg1_jobs)),
             tool_availability=dict(
                 updates.get("tool_availability", self.tool_availability)
             ),
@@ -47,11 +47,11 @@ class WorldState:
                 updates.get("model_availability", self.model_availability)
             ),
             device_status=updates.get("device_status", self.device_status),
-            recent_turn_confidences=tuple(
+            recent_turn_confidences=list(
                 updates.get("recent_turn_confidences", self.recent_turn_confidences)
             ),
             aggregate_confidence=updates.get(
                 "aggregate_confidence", self.aggregate_confidence
             ),
-            failure_log=tuple(updates.get("failure_log", self.failure_log)),
+            failure_log=list(updates.get("failure_log", self.failure_log)),
         )

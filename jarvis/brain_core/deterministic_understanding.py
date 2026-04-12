@@ -63,7 +63,7 @@ WORKFLOW_WORDS = {
     "architecture",
 }
 CAPABILITY_WORDS = {"capability", "capabilities", "help", "support", "able"}
-SCREEN_WORDS = {"screen", "display", "window", "monitor", "screenshot", "desktop"}
+SCREEN_WORDS = {"screen", "display", "monitor", "screenshot", "desktop"}
 INSPECT_WORDS = {
     "inspect",
     "look",

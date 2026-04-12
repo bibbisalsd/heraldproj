@@ -4,6 +4,8 @@ import json
 import logging
 import os
 import threading
+import sys
+import platform
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -50,6 +52,7 @@ from .models.ollama_client import OllamaClient
 from .observability.events import EventRecord, PersistentEventLogger
 from .specialists.specialist_code import run as run_specialist_code
 from .specialists.specialist_vision import run as run_specialist_vision
+from .tools.sys_info import get_hardware_info
 from .tools.app_ops import focus as focus_app
 from .tools.app_ops import launch as launch_app
 from .tools.volume_control import set_volume, get_volume
@@ -415,6 +418,9 @@ class JarvisRuntime(RuntimeV2Mixin):
             os.environ["JARVIS_DEGRADED_MODE"] = "false"
             self.turn_pipeline._preload_realtime_model()
             self.turn_pipeline._start_model_keepalive()
+        
+        self._seed_hardware_info()
+        
         crsis = self.turn_pipeline._evaluate_and_persist_crsis(
             source="runtime_startup",
             turn_id="startup",
@@ -1078,6 +1084,28 @@ class JarvisRuntime(RuntimeV2Mixin):
             "applied_successfully": result.applied_successfully,
             "rolled_back": result.rolled_back,
         }
+
+    def _seed_hardware_info(self) -> None:
+        """Collect and store hardware and system facts in memory."""
+        try:
+            # System basic info
+            self.memory.pockets.set_slot("self:jarvis", "python_version", sys.version.split()[0])
+            self.memory.pockets.set_slot("self:jarvis", "os_platform", sys.platform)
+            
+            # Hardware discovery
+            hw = get_hardware_info()
+            if hw.get("cpu_cores"):
+                self.memory.pockets.set_slot("self:jarvis", "cpu_cores", str(hw["cpu_cores"]))
+            if hw.get("ram_total_gb"):
+                self.memory.pockets.set_slot("self:jarvis", "ram_gb", str(hw["ram_total_gb"]))
+            
+            # GPU info
+            for i, gpu in enumerate(hw.get("gpus", [])):
+                self.memory.pockets.set_slot("self:jarvis", f"gpu_{i}_name", gpu["name"])
+                self.memory.pockets.set_slot("self:jarvis", f"gpu_{i}_vram_gb", str(gpu["vram_total_gb"]))
+                
+        except Exception as e:
+            logger.error(f"Failed to seed hardware info: {e}")
 
     def get_world_state(self) -> WorldState:
         """Get the current WorldState."""

@@ -79,14 +79,14 @@ TOOL_FIRST_INTENTS = {
     "bg1_update": True,
     "bg1_result": True,
     "owner_memory": True,
+    "self_query": True,
+    "codebase_query": True,
 }
 
 # Intents that can be tool-first OR LLM depending on complexity
 TOOL_OPTIONAL_INTENTS = {
     "website_check": True,  # Can use web_fetch (realtime) or BG1 for multi-page
     "screen_show": True,  # Can use screen capture (realtime) or BG1
-    "self_query": True,  # Can use codebase self-knowledge (realtime)
-    "codebase_query": True,  # Can use codebase map (realtime)
 }
 
 
@@ -262,6 +262,11 @@ EXACT_INTENTS = {
         "still running",
         "give me an update",
         "update on the task",
+        "what are you doing",
+        "what are you doin",
+        "what are you doig",
+        "whats happening",
+        "what is happening",
     },
     "bg1_result": {
         "what did you find",
@@ -289,6 +294,24 @@ class TaskDecision:
     idempotency_key: str | None = None
     needs_job_status_context: bool = False
     needs_memory_context: bool = False
+
+
+def _levenshtein(a: str, b: str) -> int:
+    """Simple Levenshtein distance implementation."""
+    if len(a) < len(b):
+        return _levenshtein(b, a)
+    if len(b) == 0:
+        return len(a)
+    previous_row = range(len(b) + 1)
+    for i, c1 in enumerate(a):
+        current_row = [i + 1]
+        for j, c2 in enumerate(b):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    return previous_row[-1]
 
 
 class PromptDispatcher:
@@ -349,9 +372,7 @@ class PromptDispatcher:
             "create",
             "generate",
             "build",
-            "script",
             "program",
-            "code",
         }
         if any(w in tokens for w in code_gen_words) and any(
             w in tokens
@@ -364,6 +385,20 @@ class PromptDispatcher:
                 "html",
                 "css",
                 "component",
+                "rust",
+                "go",
+                "java",
+                "javascript",
+                "typescript",
+                "c",
+                "cpp",
+                "assembly",
+                "kotlin",
+                "swift",
+                "implementation",
+                "algorithm",
+                "library",
+                "module",
             )
         ):
             return TaskDecision(
@@ -460,6 +495,9 @@ class PromptDispatcher:
             and self._semantic_intent_allowed(semantic.intent, key)
         ):
             lane = self._determine_lane(semantic.intent, "realtime")
+            if TOOL_FIRST_INTENTS.get(semantic.intent):
+                lane = "realtime"
+
             if lane == "bg1" and bg1_busy:
                 return TaskDecision(
                     lane="realtime",
@@ -605,6 +643,10 @@ class PromptDispatcher:
             "call",
             "job",
             "task",
+            "code",
+            "codebase",
+            "repo",
+            "repository",
             # Job cancel
             "cancel",
             "abort",
@@ -652,6 +694,13 @@ class PromptDispatcher:
                 for x in ["free", "done", "finished", "available", "complete"]
             ):
                 return True
+
+        # Phase 2: Fuzzy check for status words to handle typos like 'doig'
+        status_triggers = {"doing", "happening", "running", "going", "status", "progress"}
+        for token in tokens:
+            for trigger in status_triggers:
+                if len(token) >= 4 and _levenshtein(token, trigger) <= 1:
+                    return True
 
         # If no command keywords present, skip semantic matching
         return bool(tokens & command_tokens)

@@ -216,6 +216,7 @@ class TTS:
 
     def speak_reliable(self, text: str, max_retries: int = 2, timeout: float = 5.0) -> Dict[str, str]:
         """Robust wrapper around speak with retries. (P2-11)"""
+        self.last_spoken = str(text or "").strip()
         last_res = {"ok": "false", "error": "not_started"}
         for attempt in range(max_retries + 1):
             try:

@@ -4,7 +4,10 @@ from jarvis.models.code import analyze as analyze_code
 
 
 def run(task: str, model: str | None = None, reviewer_model: str | None = None) -> dict:
-    result = analyze_code(task, model=model, reviewer_model=reviewer_model)
+    if reviewer_model:
+        result = analyze_code(task, model=model, reviewer_model=reviewer_model)
+    else:
+        result = analyze_code(task, model=model)
     if result.get("ok"):
         summary = str(result.get("summary", "")).strip()
         snippet = summary[:350] if summary else "done"

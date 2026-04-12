@@ -174,7 +174,7 @@ class SpeechFormatter:
 
         # Replace internal strings
         formatted = formatted.replace(
-            "BG1_BUSY_ACTIVE", "the background task lane is currently busy"
+            "BG1_BUSY_ACTIVE", "the heavy task lane is currently busy"
         )
 
         # Format time meridiem

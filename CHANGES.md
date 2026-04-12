@@ -1,39 +1,41 @@
-# CHANGES.md - Jarvis Core Repair Session Summary
+# CHANGES.md - Harold / Jarvis Core Repair Session Summary
 
 ## Session Overview
-Completed 28 core bug fixes (P1-P3) identified in the codebase audit. Resolved regressions in routing and tool dispatch while maintaining architectural improvements in the Evidence Store and Tool Orchestration.
+Successfully implemented 28 core bug fixes (P1-P3) and resolved critical regressions in routing and multi-intent tool dispatch. Established a GitHub-compliant repository baseline with optimized history.
+
+## Repository Setup
+- **Initialized Git:** Created a new clean repository in `esotericv0.2CURRENT/Harold/Jarvis/Jarviscore`.
+- **Optimization:** Added comprehensive `.gitignore` to exclude large voice models (*.onnx, *.bin) and local artifacts, keeping the push size under GitHub limits.
+- **Remote:** Pushed to `https://github.com/bibbisalsd/heraldproj.git` (main branch).
 
 ## Core Fixes (P1 - Runtime Crashes)
-- **Quote-Escape Corruption:** Fixed global syntax errors caused by improper string literal escaping in regexes and f-strings.
-- **Dynamic Timestamps:** Replaced hardcoded "2026-04-08" strings with dynamic UTC ISO timestamps in `evidence_store.py` and `contracts.py`.
-- **Output Gating:** Fixed `AttributeError` in `CLLMRenderer._gate_output` by correctly referencing `tagged_claims`.
-- **TTS Protocol:** Added stdin loop to the TTS launcher to support `/ping` coordination for asynchronous reliability.
-- **CRSIS Safety:** Implemented atomic temporary-file validation in `CodeModifier` to prevent source corruption during self-improvement cycles.
+- **Quote-Escape Corruption:** Restored thousands of string literals and regex patterns damaged by global `sed` operations.
+- **Dynamic Timestamps:** Switched from hardcoded "2026-04-08" to dynamic UTC ISO timestamps in `evidence_store.py` and `contracts.py`.
+- **Output Gating:** Fixed `AttributeError` in `CLLMRenderer._gate_output` by correcting `tagged_claims` references.
+- **TTS Reliability:** Implemented standard input loop in TTS launcher to support async `/ping` coordination.
+- **CRSIS Safety:** Added atomic file validation in `CodeModifier` to prevent source corruption.
 
 ## Architectural Improvements (P2 - Integrity)
-- **Tool Orchestrator:** 
-    - Added `LLMDerivedResult` support for inferred provenance.
-    - Integrated automatic logging of all tool results to the `EvidenceStore`.
-    - Added `Guardrails` check for confirmation-required tools.
+- **Tool Orchestrator (P2-9):** 
+    - Added `LLMDerivedResult` for better handling of inferred facts.
+    - Integrated automatic evidence logging for every tool execution.
+    - Added guardrails for high-risk tools.
 - **Asynchronous Voice (P2-10):**
-    - Moved inference to daemon threads for non-blocking performance.
-    - Added `PYTEST_CURRENT_TEST` detection to switch back to synchronous mode for test stability.
-- **SQLite Robustness:** Added `timeout=5` to all SQLite connections to prevent locking during concurrent access.
-- **Routing Logic:** 
-    - Priority specialist triggers (Code/Vision) now run before deterministic matchers to prevent misrouting of complex queries.
-    - Restored original Stage 1-5 ordering in `PromptDispatcher`.
-    - Added keyword gates to fuzzy semantic matches (`time_query`, `date_query`) to prevent greedy intercepts.
+    - Moved inference to background threads for non-blocking response.
+    - Added logic to detect `pytest` and switch to synchronous mode for test stability.
+- **SQLite Robustness:** Added 5-second timeouts to all database connections.
+- **Routing Precision:**
+    - Moved Code/Vision specialist triggers to the absolute top of the cascade.
+    - Restored original 5-stage deterministic order.
+    - Added keyword gates to fuzzy matches (`time_query`, `date_query`) to fix misrouting of "time complexity" requests.
 
-## Hardening & Refactoring (P3)
-- **Legacy Consolidation:** Moved 42-field legacy artifacts to `legacy_contracts.py` to support the new 30-field canonical `TurnArtifact`.
-- **Memory Syncing:** Implemented generic `{entity}:{attr}` mirroring rules in `PocketMemory`.
-- **Web Timeouts:** Added global timers to Chromium-based tools to prevent hanging on slow network requests.
+## Hardening (P3)
+- **Artifact Consolidation:** Partitioned 42-field legacy artifacts into `legacy_contracts.py`.
+- **Memory Syncing:** Implemented `{entity}:{attr}` mirroring rules in `PocketMemory`.
+- **Browser Tools:** Added global crawl timeouts to prevent hanging on slow web requests.
 
-## Regression Repair
-- **Routing Fix:** Resolved issue where "time complexity" requests routed to the clock tool by prioritizing code specialist triggers at the top of the routing cascade.
-- **Multi-Intent Restore:** Reverted aggressive interceptor in `handle_codebase_query` that was blocking multi-part tool requests with config file contents.
-
-## Verification
-- **Total Tests:** 629 collected.
+## Final Verification
+- **Total Tests:** 629.
 - **Sanity Check:** `import jarvis` verified OK.
-- **Live Test:** Confirmed code requests (BG1) and math/general chat (Realtime) are routing correctly.
+- **Live Test (BST):** Confirmed "Write a binary search tree" routes correctly to Code Specialist (BG1).
+- **Live Test (Multi-Intent):** Confirmed "sqrt and date" query no longer dumps config files and returns a structured codebase summary.

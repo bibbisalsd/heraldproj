@@ -6,7 +6,7 @@ from .web_structured_extract import structured_extract
 
 
 def scrape(url: str) -> dict:
-    fetched = fetch(url, use_playwright=True)
+    fetched = fetch(url)
     if not fetched.get("ok"):
         return fetched
 

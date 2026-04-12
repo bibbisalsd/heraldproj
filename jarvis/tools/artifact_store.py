@@ -13,6 +13,10 @@ def _resolve_artifact_path(
     if base is None:
         return None, "path_outside_workspace"
 
+    # Explicitly check for '..' traversal before joining.
+    if ".." in name or ".." in name.replace("\\", "/"):
+        return None, "path_outside_artifact_dir"
+
     try:
         target = (base / name).resolve()
     except OSError:

@@ -149,10 +149,7 @@ def _prepare_vision_task(
         stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
         target = capture_dir / f"screen_{stamp}.png"
         # Phase 2C: Use smart crop for foreground_window captures
-        use_smart_crop = capture_target == "foreground_window"
-        capture_meta = capture_screen(
-            str(target), target=capture_target, smart_crop=use_smart_crop
-        )
+        capture_meta = capture_screen(str(target), target=capture_target)
         if capture_meta.get("ok"):
             captured_path = str(Path(str(capture_meta["path"])).resolve())
             image_paths.append(captured_path)

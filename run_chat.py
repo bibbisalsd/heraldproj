@@ -100,6 +100,43 @@ while True:
         break
 
     result = rt.run_turn(user)
+
+    if os.environ.get("JARVIS_DEBUG") == "1":
+        print(f"\n{CYAN}--- DEBUG TRACE ---{RESET}")
+        print(f"{DIM}Routing: {result.get('match_type')} -> {result.get('lane')} ({result.get('route_reason')}){RESET}")
+        print(f"{DIM}Intent:  {result.get('intent')} (resolved_by: {result.get('resolved_by')}){RESET}")
+        
+        if result.get("llm_model") and result.get("llm_model") != "none":
+            print(f"{DIM}Model:   {result.get('llm_model')} ({result.get('llm_elapsed_ms', 0):.1f}ms){RESET}")
+        
+        tools = result.get("tool_summaries", [])
+        tool_results = result.get("tool_results", [])
+        if tools:
+            print(f"{DIM}Tools:   {', '.join(tools)}{RESET}")
+            for i, res in enumerate(tool_results):
+                name = getattr(res, 'tool_name', f"tool_{i}")
+                summary = getattr(res, 'summary', str(res))
+                print(f"{DIM}  - {name}: {summary}{RESET}")
+        
+        packet = result.get("evidence_packet")
+        if packet:
+            facts = getattr(packet, "verified_facts", [])
+            if facts:
+                print(f"{DIM}Fact Packet ({len(facts)}):{RESET}")
+                for f in facts:
+                    strength = getattr(f, "verification_strength", "unknown")
+                    content = getattr(f, "content", str(f))
+                    print(f"{DIM}  - [{strength}] {content}{RESET}")
+        
+        raw_output = result.get("raw_llm_output")
+        if raw_output:
+            print(f"{DIM}Raw LLM: {raw_output}{RESET}")
+
+        memory = result.get("memory_items", [])
+        if memory:
+            print(f"{DIM}Memory:  {len(memory)} hits{RESET}")
+        print(f"{CYAN}-------------------{RESET}\n")
+
     # Prefer display_text (full result) over text (voice-truncated)
     display = result.get("display_text") or result["text"]
     print(f"Jarvis> {display}")

@@ -117,6 +117,18 @@ INTENT_PHRASES = {
         "deactivate addon",
         "stop addon",
     },
+    "self_query": {
+        "where is your code",
+        "what is your source code",
+        "show me your source",
+        "where do you keep your files",
+    },
+    "codebase_query": {
+        "do you know your code base",
+        "tell me about your codebase",
+        "describe your source code",
+        "how are you built",
+    },
 }
 
 

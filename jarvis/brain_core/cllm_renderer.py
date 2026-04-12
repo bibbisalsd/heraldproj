@@ -122,12 +122,16 @@ ESCAPE_MARKERS = [
     "as a language model",
     "i'm just an ai",
     "i don't have access to",
+    "i do not have access to",
     "i cannot access",
     "i don't have real-time",
+    "i do not have real-time",
     "my training data",
     "my knowledge cutoff",
     "i cannot verify",
     "i cannot confirm",
+    "i don't know",
+    "i do not know",
     "i should note",
     "it's important to note",
     "to be transparent",
@@ -179,41 +183,62 @@ class CLLMRenderer:
         )
         self._event_logger = PersistentEventLogger(log_dir)
 
-    def render(self, packet: ResponsePacket | TaggedResponsePacket) -> str:
+    def render(self, packet: ResponsePacket | TaggedResponsePacket) -> dict[str, Any]:
         """Render response with fact anchoring and output gating (NH-CRSIS Task G)."""
+        import time
+        start_time = time.perf_counter()
+        
         if os.getenv("JARVIS_DEGRADED_MODE", "false").lower() == "true":
-            return "System is in degraded mode. Returning deterministic response."
+            return {"text": "System is in degraded mode. Returning deterministic response.", "raw_output": "", "model": "none", "elapsed_ms": 0}
         if packet.max_packet_tokens < 1:
-            return "Unable to render packet."
+            return {"text": "Unable to render packet.", "raw_output": "", "model": "none", "elapsed_ms": 0}
         if os.getenv("PYTEST_CURRENT_TEST"):
-            return self._deterministic_fallback(packet)
+            return {"text": self._deterministic_fallback(packet), "raw_output": "", "model": "none", "elapsed_ms": 0}
 
         # Extract facts and build anchored prompt
         facts = self._extract_facts(packet)
         prompt = self._build_anchored_prompt(facts, packet)
 
         # Try preferred model with output gate
-        preferred = self._preferred.run(prompt, keep_alive="2h")
+        preferred = self._preferred.run(prompt, keep_alive="60s")
         if preferred.ok and preferred.text.strip():
             candidate = self._enforce_limits(preferred.text.strip(), packet)
             gate_passed, gate_reason = self._gate_output(candidate, packet)
             if gate_passed and self._is_grounded(candidate, packet):
-                return candidate
+                elapsed = (time.perf_counter() - start_time) * 1000
+                return {
+                    "text": candidate,
+                    "raw_output": preferred.text.strip(),
+                    "model": self._preferred.model,
+                    "elapsed_ms": elapsed
+                }
             # Emit scope escape event on gate failure
             self._emit_scope_escape(packet, gate_reason, "preferred")
 
         # Try fallback model with output gate
-        fallback = self._fallback.run(prompt, keep_alive="2h")
+        fallback = self._fallback.run(prompt, keep_alive="60s")
         if fallback.ok and fallback.text.strip():
             candidate = self._enforce_limits(fallback.text.strip(), packet)
             gate_passed, gate_reason = self._gate_output(candidate, packet)
             if gate_passed and self._is_grounded(candidate, packet):
-                return candidate
+                elapsed = (time.perf_counter() - start_time) * 1000
+                return {
+                    "text": candidate,
+                    "raw_output": fallback.text.strip(),
+                    "model": self._fallback.model,
+                    "elapsed_ms": elapsed
+                }
             # Emit scope escape event on gate failure
             self._emit_scope_escape(packet, gate_reason, "fallback")
 
         # Double gate failure - use deterministic fallback
-        return self._deterministic_fallback(packet)
+        elapsed = (time.perf_counter() - start_time) * 1000
+        return {
+            "text": self._deterministic_fallback(packet),
+            "raw_output": "GATE_FAILURE",
+            "model": "fallback_deterministic",
+            "elapsed_ms": elapsed
+        }
 
     # ========================================================================
     # NH-CRSIS Task G: Fact Anchoring Methods

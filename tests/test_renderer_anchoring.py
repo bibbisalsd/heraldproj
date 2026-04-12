@@ -229,6 +229,7 @@ class TestRenderWithAnchoring:
             job_snapshot=None,
         )
         renderer.render(packet)
+        # Note: render() returns a dict now, but we're just checking that it ran and built prompts
         assert len(captured_prompts) > 0
         assert "PERMITTED FACTS" in captured_prompts[0]
         assert "[1] test fact" in captured_prompts[0]
@@ -258,7 +259,8 @@ class TestRenderWithAnchoring:
             job_snapshot=None,
             deterministic_fallback="This is the deterministic fallback response.",
         )
-        result = renderer.render(packet)
+        result_dict = renderer.render(packet)
+        result = result_dict["text"]
         assert "deterministic fallback" in result.lower()
 
 
@@ -327,7 +329,8 @@ class TestLLMPathBypass:
             deterministic_fallback="Deterministic fallback.",
         )
         
-        result = renderer.render(packet)
+        result_dict = renderer.render(packet)
+        result = result_dict["text"]
         
         # Should NOT be the hedged LLM output, but the fallback
         assert "I think" not in result

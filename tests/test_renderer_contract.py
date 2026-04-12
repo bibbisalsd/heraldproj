@@ -17,7 +17,8 @@ def test_renderer_strips_internal_prefixes_in_deterministic_fallback(monkeypatch
         tone="neutral",
         length_hint="short",
     )
-    text = CLLMRenderer().render(packet)
+    result = CLLMRenderer().render(packet)
+    text = result["text"]
     assert "Jarvis is online." in text
     assert "local_time:3:42pm" in text
     assert "user_name:alex" in text
@@ -37,7 +38,8 @@ def test_renderer_returns_degraded_message(monkeypatch):
         tone="neutral",
         length_hint="short",
     )
-    text = CLLMRenderer().render(packet)
+    result = CLLMRenderer().render(packet)
+    text = result["text"]
     assert "degraded mode" in text.lower()
 
 
@@ -51,5 +53,6 @@ def test_renderer_rejects_invalid_packet_limit(monkeypatch):
         length_hint="short",
         max_packet_tokens=0,
     )
-    text = CLLMRenderer().render(packet)
+    result = CLLMRenderer().render(packet)
+    text = result["text"]
     assert text == "Unable to render packet."

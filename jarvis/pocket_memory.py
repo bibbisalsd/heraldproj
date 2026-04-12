@@ -530,7 +530,7 @@ class PocketMemoryStore:
         }
 
     def seed_core_pockets(self) -> None:
-        from .config import build_default_config
+        from .config import build_default_config, JARVIS_VERSION
 
         cfg = build_default_config()
         repo_root = Path(__file__).resolve().parents[1]
@@ -575,6 +575,7 @@ class PocketMemoryStore:
 
         canonical_slots = [
             ("self:jarvis", "name", "Jarvis"),
+            ("self:jarvis", "version", JARVIS_VERSION),
             ("self:jarvis", "assistant_type", "local_ai_assistant"),
             ("self:jarvis", "wake_word", cfg.wake_word_phrase),
             ("self:jarvis", "runtime_location", "this computer"),

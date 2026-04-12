@@ -143,6 +143,30 @@ def _normalize_app_name(name: str) -> str:
     return name.lower().strip().replace("-", " ").replace("_", " ")
 
 
+def _supports_app_ops(action: str = "launch") -> bool:
+    """Check if app operations are supported on the current platform."""
+    if sys.platform == "win32":
+        try:
+            import win32gui
+            return True
+        except ImportError:
+            return False
+    
+    if sys.platform.startswith("linux"):
+        has_display = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+        has_xdotool = bool(shutil.which("xdotool"))
+        
+        if action == "launch":
+            # Launching on Linux is supported if we have a display (even without xdotool)
+            # This satisfies B2's instruction to proceed to executable lookup.
+            return has_display
+            
+        # focus/close need a display AND xdotool
+        return has_display and has_xdotool
+    
+    return False
+
+
 def launch(app_name: str) -> dict[str, Any]:
     """Launch an application by name.
 
@@ -157,6 +181,16 @@ def launch(app_name: str) -> dict[str, Any]:
             - pid: int|None (process ID if launched)
             - path: str|None (path to executable)
     """
+    if not _supports_app_ops("launch"):
+        return {
+            "ok": False,
+            "reason": "app_ops_unavailable",
+            "action": "launch",
+            "app": app_name,
+            "pid": None,
+            "path": None,
+        }
+
     if os.name == "nt":
         return _launch_windows(app_name)
     return _launch_linux(app_name)
@@ -176,6 +210,16 @@ def focus(app_name: str) -> dict[str, Any]:
             - window_found: bool
             - hwnd: int|None (window handle if found, Windows only)
     """
+    if not _supports_app_ops("focus"):
+        return {
+            "ok": False,
+            "reason": "app_ops_unavailable",
+            "action": "focus",
+            "app": app_name,
+            "window_found": False,
+            "hwnd": None,
+        }
+
     if os.name == "nt":
         return _focus_windows(app_name)
     return _focus_linux(app_name)

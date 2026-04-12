@@ -167,14 +167,3 @@ def _looks_like_path(value: str) -> bool:
 # Aliases for backward compatibility
 def resolve_workspace_root(start: str | Path | None = None) -> Path:
     return workspace_root(Path(start) if isinstance(start, str) else start)
-
-def resolve_workspace_path(candidate: str | Path, **kwargs: Any) -> Path:
-    # Most callers expect this to return a Path relative to workspace root or absolute
-    return Path(candidate)
-
-def resolve_workspace_target(candidate: str) -> Path | None:
-    # Just a pass-through Path conversion for now to satisfy stubs
-    return Path(candidate) if candidate else None
-
-def resolve_workspace_image(candidate: str) -> Path | None:
-    return Path(candidate) if candidate else None
