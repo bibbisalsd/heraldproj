@@ -1,0 +1,87 @@
+{
+  "voices": {
+    "jarvis_clone_pro": {
+      "mix": [
+        [
+          "bm_lewis",
+          0.75
+        ],
+        [
+          "bm_daniel",
+          0.15
+        ],
+        [
+          "am_michael",
+          0.1
+        ]
+      ],
+      "speed": 0.9,
+      "lang": "en-gb",
+      "objective_score": 0.0
+    },
+    "jarvis_clone_from_piper_smoke": {
+      "mix": [
+        [
+          "bm_lewis",
+          0.336691
+        ],
+        [
+          "bm_daniel",
+          0.013169
+        ],
+        [
+          "bm_fable",
+          0.144817
+        ],
+        [
+          "am_michael",
+          0.117532
+        ],
+        [
+          "bm_george",
+          0.38779
+        ]
+      ],
+      "speed": 0.9144,
+      "lang": "en-gb",
+      "objective_score": 0.656801
+    },
+    "jarvis_clone_from_piper": {
+      "mix": [
+        [
+          "bm_lewis",
+          0.105731
+        ],
+        [
+          "bm_daniel",
+          0.69905
+        ],
+        [
+          "bm_fable",
+          0.050574
+        ],
+        [
+          "am_michael",
+          0.069073
+        ],
+        [
+          "bm_george",
+          0.075572
+        ]
+      ],
+      "coefficients": [
+        0.111177,
+        2.0,
+        -0.626281,
+        -0.314565,
+        -0.224638
+      ],
+      "speed": 0.9,
+      "lang": "en-gb",
+      "objective_score": 1.869134,
+      "vector_profile": true,
+      "preferred": true,
+      "vector_blend": 0.35
+    }
+  }
+}

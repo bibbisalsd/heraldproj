@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-02T10:38:14.373356+00:00",
+  "source": "daily_ops",
+  "status": "warn",
+  "issues": [
+    {
+      "timestamp": "2026-04-02T10:38:14.373356+00:00",
+      "source": "daily_ops",
+      "status": "warn",
+      "severity": "warn",
+      "code": "low_voice_smoke_coverage",
+      "message": "Voice smoke coverage 0.00 < 0.50."
+    }
+  ]
+}

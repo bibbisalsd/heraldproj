@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-04-02T10:38:22.641676+00:00",
+  "source": "runtime_startup",
+  "status": "critical",
+  "signals": [
+    {
+      "key": "runtime_degraded_mode",
+      "value": 1.0,
+      "threshold": 1.0,
+      "comparator": "eq",
+      "severity": "critical",
+      "message": "Runtime is operating in degraded mode.",
+      "metadata": {}
+    },
+    {
+      "key": "fallback_template_used",
+      "value": 0.0,
+      "threshold": 1.0,
+      "comparator": "eq",
+      "severity": "warn",
+      "message": "Turn resolved via fallback template.",
+      "metadata": {}
+    }
+  ],
+  "findings": [
+    {
+      "signal_key": "runtime_degraded_mode",
+      "severity": "critical",
+      "message": "Runtime is operating in degraded mode.",
+      "value": 1.0,
+      "threshold": 1.0,
+      "comparator": "eq"
+    }
+  ],
+  "metadata": {
+    "turn_id": "startup",
+    "lane_decision": "n/a",
+    "resolved_by": "template"
+  }
+}

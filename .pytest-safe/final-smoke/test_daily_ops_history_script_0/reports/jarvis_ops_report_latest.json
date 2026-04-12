@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-03-31T10:00:00+00:00",
+  "voice_smoke": {
+    "voice_metrics": {
+      "fallback_repeat_prompt": 1,
+      "fallback_mic_unavailable": 0,
+      "tts_backend_counts": {
+        "stub": 1
+      }
+    }
+  },
+  "retention": {
+    "memory_deleted": 2,
+    "memory_backups_deleted": 1,
+    "voice_metrics_deleted": 0
+  }
+}

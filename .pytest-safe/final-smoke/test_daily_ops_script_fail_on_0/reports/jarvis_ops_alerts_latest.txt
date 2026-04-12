@@ -1,0 +1,1 @@
+[warn] low_voice_smoke_coverage: Voice smoke coverage 0.00 < 0.50.

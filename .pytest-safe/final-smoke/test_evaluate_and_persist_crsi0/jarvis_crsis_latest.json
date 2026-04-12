@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-04-02T10:38:15.315384+00:00",
+  "source": "ops_history_test",
+  "status": "warn",
+  "signals": [
+    {
+      "key": "voice_smoke_coverage",
+      "value": 0.4,
+      "threshold": 0.5,
+      "comparator": "lt",
+      "severity": "warn",
+      "message": "Voice smoke coverage 0.40 is below 0.50.",
+      "metadata": {}
+    },
+    {
+      "key": "repeat_fallback_rate",
+      "value": 0.1,
+      "threshold": 0.25,
+      "comparator": "gt",
+      "severity": "warn",
+      "message": "Repeat fallback rate 0.10 is above 0.25.",
+      "metadata": {}
+    },
+    {
+      "key": "mic_unavailable_rate",
+      "value": 0.05,
+      "threshold": 0.25,
+      "comparator": "gt",
+      "severity": "warn",
+      "message": "Mic unavailable rate 0.05 is above 0.25.",
+      "metadata": {}
+    }
+  ],
+  "findings": [
+    {
+      "signal_key": "voice_smoke_coverage",
+      "severity": "warn",
+      "message": "Voice smoke coverage 0.40 is below 0.50.",
+      "value": 0.4,
+      "threshold": 0.5,
+      "comparator": "lt"
+    }
+  ],
+  "metadata": {
+    "report_count": 12
+  }
+}

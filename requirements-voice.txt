@@ -1,0 +1,9 @@
+# Voice pipeline dependencies (Linux)
+# Phase 1A: Pin all versions to prevent breaking changes on pip install
+pyttsx3>=2.90,<3.0
+SpeechRecognition>=3.10.0,<4.0
+PyAudio>=0.2.13,<0.3
+pvporcupine>=3.0.0,<4.0
+pvrecorder>=1.2.0,<2.0
+sounddevice>=0.4.6,<0.5
+numpy>=1.24.0,<2.0

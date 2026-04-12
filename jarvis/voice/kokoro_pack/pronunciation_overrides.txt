@@ -1,0 +1,7 @@
+# Optional custom pronunciation overrides
+# Format: text = replacement
+# Example:
+# TTS = tee tee ess
+# LLC = L L C
+Russian = Rushan
+Russain = Rushan

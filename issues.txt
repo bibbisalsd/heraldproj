@@ -1,0 +1,22 @@
+Jarvis codebase smoke-check issues report
+Date: 2026-04-02
+
+Smoke results captured today:
+- pytest -q tests -> 276 passed, 1 skipped
+- scripts/model_readiness.ps1 -OutputFormat json -> ready
+- scripts/compile_v1.ps1 -SkipModelPull -> pass
+- scripts/accept_target_stack.ps1 -SkipVoiceMic -> pass
+- scripts/accept_target_stack.ps1 -SkipVoiceMic:$false -MicDurationSeconds 3 -> code path supported; final human-spoken signoff still pending
+
+Blocking smoke issues:
+- none currently reproduced after the fixes in this session
+
+Non-blocking remaining gaps / open work:
+1. One intelligible human-spoken microphone/STT confirmation is still recommended on the target hardware; explicit mic/output-device diagnostics are now present, but the latest automated mic run captured audio successfully and still fell back with `I did not catch that. Please repeat.`
+2. Active-window capture is not currently part of the supported vision surface.
+3. Several web / app / desktop tools are intentionally marked unavailable rather than fully implemented.
+4. AMD GPU expansion, full addon completion, and broader Jarvis improvement work remain separate future tracks.
+
+Summary:
+- No repo-feasible blocking issues are currently open for the narrowed completion-plan scope.
+- The remaining blocker is manual target-hardware speech confirmation, not a reproduced codebase failure.

@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-04-02T10:38:12.710668+00:00",
+  "voice_smoke": null,
+  "retention": {
+    "memory_deleted": 0,
+    "memory_backups_deleted": 0,
+    "voice_metrics_deleted": 2,
+    "voice_metrics_remaining": 0,
+    "voice_metrics_deleted_files": [
+      "C:\\.Root\\Shell\\Kernel\\Workspace\\CLLM\\Harold\\Jarvis\\Jarviscore\\.pytest-safe\\final-smoke\\test_run_daily_ops_prunes_old_0\\logs\\jarvis_voice_metrics_2026-04-02.jsonl",
+      "C:\\.Root\\Shell\\Kernel\\Workspace\\CLLM\\Harold\\Jarvis\\Jarviscore\\.pytest-safe\\final-smoke\\test_run_daily_ops_prunes_old_0\\logs\\jarvis_voice_metrics_2026-04-02.csv"
+    ],
+    "ops_alerts_deleted": 0,
+    "ops_alerts_remaining": 0,
+    "ops_alerts_deleted_files": [],
+    "crsis_deleted": 0,
+    "crsis_remaining": 0,
+    "crsis_deleted_files": []
+  }
+}

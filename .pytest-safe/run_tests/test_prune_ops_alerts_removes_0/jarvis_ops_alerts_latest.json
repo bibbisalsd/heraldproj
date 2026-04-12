@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-03T20:15:16.629571+00:00",
+  "source": "test",
+  "status": "warn",
+  "issues": [
+    {
+      "timestamp": "2026-04-03T20:15:16.629571+00:00",
+      "source": "test",
+      "status": "warn",
+      "severity": "warn",
+      "code": "test",
+      "message": "test issue"
+    }
+  ]
+}

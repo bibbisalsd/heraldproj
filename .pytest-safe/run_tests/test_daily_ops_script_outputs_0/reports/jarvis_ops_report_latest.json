@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-04-03T20:15:12.570314+00:00",
+  "voice_smoke": {
+    "lane": "realtime",
+    "text": "I am online and ready.",
+    "tts_backend": "stub",
+    "tts_error": "",
+    "voice_metrics": {
+      "capture_attempts": 0,
+      "capture_success": 0,
+      "capture_failures": 0,
+      "transcribe_attempts": 1,
+      "transcribe_success": 1,
+      "transcribe_failures": 0,
+      "turns_processed": 1,
+      "fallback_repeat_prompt": 0,
+      "fallback_mic_unavailable": 0,
+      "tts_backend_counts": {
+        "stub": 1
+      },
+      "requested_input_device": null,
+      "requested_output_device": null,
+      "selected_input_device": null,
+      "selected_output_device": null,
+      "sample_rate": null,
+      "capture_duration_seconds": null,
+      "audio_capture_ok": null,
+      "transcribe_ok": true,
+      "fallback_reason": ""
+    }
+  },
+  "retention": {
+    "memory_deleted": 0,
+    "memory_backups_deleted": 0,
+    "voice_metrics_deleted": 0,
+    "voice_metrics_remaining": 0,
+    "voice_metrics_deleted_files": [],
+    "ops_alerts_deleted": 0,
+    "ops_alerts_remaining": 0,
+    "ops_alerts_deleted_files": [],
+    "crsis_deleted": 0,
+    "crsis_remaining": 0,
+    "crsis_deleted_files": []
+  }
+}

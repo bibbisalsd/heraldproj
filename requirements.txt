@@ -1,0 +1,4 @@
+# Core runtime dependencies
+# JARVIS core uses Python stdlib + local Ollama (via subprocess/HTTP)
+# httpx is optional but enables async OllamaClient (Phase 9)
+httpx>=0.25.0

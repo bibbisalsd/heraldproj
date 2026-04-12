@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-03T20:15:14.102222+00:00",
+  "voice_smoke": null,
+  "retention": {
+    "memory_deleted": 0,
+    "memory_backups_deleted": 0,
+    "voice_metrics_deleted": 0,
+    "voice_metrics_remaining": 0,
+    "voice_metrics_deleted_files": [],
+    "ops_alerts_deleted": 0,
+    "ops_alerts_remaining": 0,
+    "ops_alerts_deleted_files": [],
+    "crsis_deleted": 0,
+    "crsis_remaining": 0,
+    "crsis_deleted_files": []
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-03T20:15:19.796202+00:00",
+  "source": "retention_test",
+  "status": "warn",
+  "issues": [
+    {
+      "timestamp": "2026-04-03T20:15:19.796202+00:00",
+      "source": "retention_test",
+      "status": "warn",
+      "severity": "warn",
+      "code": "test_alert",
+      "message": "test"
+    }
+  ]
+}

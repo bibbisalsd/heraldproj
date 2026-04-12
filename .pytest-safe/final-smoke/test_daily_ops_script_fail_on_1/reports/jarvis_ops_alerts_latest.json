@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-04-02T10:38:15.243911+00:00",
+  "source": "daily_ops",
+  "status": "critical",
+  "issues": [
+    {
+      "timestamp": "2026-04-02T10:38:15.243911+00:00",
+      "source": "daily_ops",
+      "status": "critical",
+      "severity": "critical",
+      "code": "repeat_fallback_rate",
+      "message": "Repeat fallback rate 0.00 > -0.10."
+    }
+  ]
+}

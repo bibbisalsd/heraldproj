@@ -1,0 +1,3 @@
+timestamp,lane,text,tts_backend,tts_error,capture_attempts,capture_success,capture_failures,transcribe_attempts,transcribe_success,transcribe_failures,turns_processed,fallback_repeat_prompt,fallback_mic_unavailable,tts_backend_counts_json
+2026-04-02T10:41:26.904231+00:00,realtime,I am online.,stub,,1,1,0,1,1,0,1,0,0,"{""stub"": 1}"
+2026-04-02T10:41:26.904795+00:00,realtime,I am online.,stub,,1,1,0,1,1,0,1,0,0,"{""stub"": 1}"

@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-31T00:00:00+00:00", "voice_smoke": {"lane": "realtime", "text": "I am online.", "tts_backend": "sapi", "tts_error": "", "voice_metrics": {"fallback_repeat_prompt": 1, "fallback_mic_unavailable": 0, "tts_backend_counts": {"sapi": 1}}}, "retention": {"memory_deleted": 0, "memory_backups_deleted": 1, "voice_metrics_deleted": 1, "ops_alerts_deleted": 0}}

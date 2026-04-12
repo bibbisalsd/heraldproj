@@ -1,0 +1,40 @@
+# Environments
+.venv/
+.venv_old/
+myvenv/
+env/
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Local Data & Logs
+logs/
+artifacts/
+*.sqlite
+*.log
+*.tmp
+explore.tmp
+roadmap.tmp
+
+# Project Specific
+site/
+out/
+virus.zip
+.claude/
+.gemini/
+
+# Large Binaries
+*.onnx
+*.bin
+*.npz
+*.wav
+
+# OS
+.DS_Store
+Thumbs.db
