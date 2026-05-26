@@ -38,4 +38,4 @@ A local-first AI assistant runtime built in Python. Designed for high-integrity,
 - **Documentation:** See `PROJECT_HANDOFF.md` and `CHANGES.md` for recent repair summaries.
 
 ## License
-Private Property of billybart (James).
+Private Property of Sean Colon
