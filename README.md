@@ -1,4 +1,4 @@
-# Harold / Jarvis Core
+# Herald / Jarvis / Skeptic Architecture 
 
 A local-first AI assistant runtime built in Python. Designed for high-integrity, deterministic interaction with integrated memory, tool policy, and self-improvement loops.
 
@@ -33,7 +33,7 @@ A local-first AI assistant runtime built in Python. Designed for high-integrity,
    ```
 
 ## Development
-- **Tests:** 629 unique test cases.
+- **Tests:** 640 unique test cases.
 - **Validation:** Run `pytest tests/ -x` for incremental verification.
 - **Documentation:** See `PROJECT_HANDOFF.md` and `CHANGES.md` for recent repair summaries.
 
